@@ -5,23 +5,23 @@ const express = require('express');
 const app = express();
 
 const PORT = 3000;
-
+app.use(express.json())
 app.post('/signup', async (req, res) => {
-    const userObj = {
-        firstName: 'Virat',
-        lastName: 'Kohli',
-        email: 'virat@in.com',
-        password: 'password@123'
-    }
+    // console.log(req.body)
+    // const userObj = {
+    //     firstName: 'Virat',
+    //     lastName: 'Kohli',
+    //     email: 'virat@in.com',
+    //     password: 'password@123'
+    // }
 
-    const user = new User(userObj);
+    const user = new User(req.body);
     try {
         await user.save();
         res.send('User added successfully!')
     } catch (err) {
         res.status(400).send(`Fix this error first => ${err}`)
     }
-
 })
 
 
