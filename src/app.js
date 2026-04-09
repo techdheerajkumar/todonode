@@ -1,41 +1,39 @@
-const {adminAuth, userAuth} = require('./middlewares/adminAuth')
+const { connectDB } = require('./config/database')
+// const {adminAuth, userAuth} = require('./middlewares/adminAuth')
+const { User } = require('./models/user')
 const express = require('express');
 const app = express();
 
 const PORT = 3000;
-app.use('/admin', adminAuth)
 
-app.get('/admin/getAllData', (req, res, next) => {
-    res.send([{
-        firstName: 'Dheeraj',
-        lastName: 'Kumar'
-    }, {
-        firstName: 'Neha',
-        lastName: 'neha'
-    }])
+app.post('/signup', async (req, res) => {
+    const userObj = {
+        firstName: 'Virat',
+        lastName: 'Kohli',
+        email: 'virat@in.com',
+        password: 'password@123'
+    }
+
+    const user = new User(userObj);
+    try {
+        await user.save();
+        res.send('User added successfully!')
+    } catch (err) {
+        res.status(400).send(`Fix this error first => ${err}`)
+    }
+
 })
 
 
-app.use('/user', userAuth, (req, res) =>{
-    // console.log(req.params)
- res.send('Welcome user')
+
+
+
+connectDB().then(() => {
+    console.log('Database connected successfully!')
+}).then(() => {
+    app.listen(PORT, () => {
+        console.log('Server is running')
+    });
+}).catch((err) => {
+    console.error(console.log(`Database cannot be connect =>  ${err}`))
 })
-// app.use('/user/:userId/:name/:age', (req, res) =>{
-//     console.log(req.params)
-//  res.send('Its a post request')
-// })
-
-// app.put('/user', (req, res)=>{
-//     res.send('Its a put request')
-// })
-
-// app.delete('/user', (req, res)=>{
-//     res.send('Its a delete request')
-// })
-
-// app.use('/test',(req, res)=>{ 
-//     res.send('<h1>Hello from the server</h1>')
-// })
-app.listen(PORT, () => {
-    console.log('Server is running')
-});
