@@ -6,7 +6,6 @@ const adminAuth = (req, res, next) => {
     } else {
         res.status(401).send('Admin not authorized')
     }
-    ;
 }
 const userAuth = (req, res, next) => {
     let tokenKey = 'XYZ';
@@ -16,7 +15,6 @@ const userAuth = (req, res, next) => {
     } else {
         res.status(401).send('User not authorized')
     }
-    ;
 }
 
 module.exports = {

@@ -5,18 +5,17 @@ const express = require('express');
 const app = express();
 
 const PORT = 3000;
-app.use(express.json())
-app.post('/signup', async (req, res) => {
-    // console.log(req.body)
-    // const userObj = {
-    //     firstName: 'Virat',
-    //     lastName: 'Kohli',
-    //     email: 'virat@in.com',
-    //     password: 'password@123'
-    // }
+app.use(express.json());
 
-    const user = new User(req.body);
+
+// Created a signup API that stores the users in the database
+app.post('/signup', async (req, res) => {
+    // I am sending a new user to database      
+    const newUser = req.body;
+    console.log(newUser)
+    const user = new User(newUser);
     try {
+        // this save method actually stores the document in the collection of mongoDB database
         await user.save();
         res.send('User added successfully!')
     } catch (err) {
@@ -25,7 +24,12 @@ app.post('/signup', async (req, res) => {
 })
 
 
-
+// Created a Feed API that gets all the users
+app.get('/feed', async (req, res)=>{
+    const getUsers = await User.find({})
+    console.log(getUsers)
+    res.send(getUsers)
+})
 
 
 connectDB().then(() => {
