@@ -49,7 +49,7 @@ app.put('/signup', async (req, res) =>{
     const id = req.body.id;
     const data = req.body;
     try{
-        await User.findByIdAndUpdate(id, data)
+        await User.findByIdAndUpdate(id, data, {runValidators: true})
         res.send('User info updated successfully!')
     }
     catch(err){
