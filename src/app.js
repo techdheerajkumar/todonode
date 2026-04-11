@@ -11,7 +11,6 @@ app.use(express.json());
 app.post('/signup', async (req, res) => {
     // I am sending a new user to database      
     const newUser = req.body;
-    console.log(newUser)
     const user = new User(newUser);
     try {
         // this save method actually stores the document in the collection of mongoDB database
@@ -24,17 +23,16 @@ app.post('/signup', async (req, res) => {
 
 
 // Created a Feed API that gets all the users
-app.get('/feed', async (req, res)=>{
+app.get('/feed', async (req, res) => {
     const getUsers = await User.find({})
     res.send(getUsers)
 })
 
 
 // Created a delete api that deletes it from the database based on the filter (name, id, email)
-app.delete('/signup', async (req, res)=>{
+app.delete('/signup', async (req, res) => {
     const getUserById = req.body.userId;
-    console.log(getUserById)
-    try{
+    try {
         await User.findByIdAndDelete(getUserById)
         res.send(await User.find({}))
     }
@@ -45,14 +43,23 @@ app.delete('/signup', async (req, res)=>{
 
 // Update API
 
-app.put('/signup', async (req, res) =>{
-    const id = req.body.id;
+app.put('/signup/:id', async (req, res) => {
+    const id = req.params.id
     const data = req.body;
-    try{
-        await User.findByIdAndUpdate(id, data, {runValidators: true})
+
+    try {
+        // restricting the user to update only limited things
+        const ALLOWED_UPDATES = ["id","skills", "gender", "password"];
+        const isAllowedUpdates = Object.keys(data).every(k => ALLOWED_UPDATES.includes(k));
+
+        if(!isAllowedUpdates){
+            throw new Error("Updates not allowed")
+        }
+
+        await User.findByIdAndUpdate(id, data, { runValidators: true })
         res.send('User info updated successfully!')
     }
-    catch(err){
+    catch (err) {
         res.send(`found an error => ${err}`)
     }
 })
