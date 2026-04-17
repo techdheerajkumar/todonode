@@ -3,10 +3,11 @@ const { connectDB } = require('./config/database')
 const { User } = require('./models/user')
 const express = require('express');
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser')
 const app = express();
 const PORT = 3000;
 app.use(express.json());
-
+app.use(cookieParser());
 
 // Created a signup API that stores the users in the database
 app.post('/signup', async (req, res) => {
@@ -39,6 +40,7 @@ app.post('/login', async (req, res) => {
 
     try {
         const { userEmail, userPassword } = req.body;
+        res.cookie('userToken', '234;asdflsdew23@34ssertte');
 
         const findUser = await User.findOne({ email: userEmail });
         const isPasswordMatch = await bcrypt.compare(userPassword, findUser.password);
@@ -53,6 +55,13 @@ app.post('/login', async (req, res) => {
     }
 
 })
+
+// Created a profile API that authenticates user and fetches the profile page of respected user.
+app.get('/profile', async (req, res) => {
+    console.log(req.cookies)
+})
+
+
 // Created a Feed API that gets all the users
 app.get('/feed', async (req, res) => {
     const getUsers = await User.find({})
